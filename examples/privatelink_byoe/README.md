@@ -57,13 +57,15 @@ Copy and use this code to get started quickly:
 ```hcl
 # BYOE (Bring Your Own Endpoint) pattern
 # 
-# For BYOE, we use a two-step approach:
-# Step 1: Root module creates Atlas-side PrivateLink endpoint and exposes service info
-# Step 2: User-managed Azure Private Endpoint references the Atlas service info (see below)
+# Use BYOE when you need custom Azure Private Endpoint configuration (e.g., static IP addresses,
+# custom naming, or integration with existing networking infrastructure).
 #
-# Note: Step 2 (azurerm_private_endpoint.custom) depends on Step 1 output (privatelink_service_info)
-
-# Step 1: Configure Atlas PrivateLink with BYOE locations
+# Single `terraform apply` approach:
+# 1: Create Atlas-side PrivateLink using `privatelink_byoe_regions` to get service connection info
+# 2: Create your own Azure Private Endpoint using the output `privatelink_service_info`
+# 3: Register your endpoint with Atlas using `privatelink_byoe` to complete the connection
+#
+# Note: azurerm_private_endpoint.custom depends on Step 1 output (module.atlas_azure.privatelink_service_info)
 
 locals {
   pe1 = "pe1"
@@ -81,10 +83,10 @@ module "atlas_azure" {
       azure_private_endpoint_ip_address = azurerm_private_endpoint.custom.private_service_connection[0].private_ip_address
     }
   }
-  privatelink_byoe_locations = { (local.pe1) = var.azure_location }
+  privatelink_byoe_regions = { (local.pe1) = var.azure_location }
 }
 
-# Step 2: User-managed Azure Private Endpoint with custom configuration
+# User-managed Azure Private Endpoint with custom configuration
 resource "azurerm_private_endpoint" "custom" {
   name                = "pe-atlas-static-ip"
   location            = var.azure_location
@@ -92,7 +94,7 @@ resource "azurerm_private_endpoint" "custom" {
   subnet_id           = var.subnet_id
 
   private_service_connection {
-    name                           = module.atlas_azure.privatelink_service_info[local.pe1].atlas_private_link_service_name
+    name                           = module.atlas_azure.privatelink_service_info[local.pe1].atlas_endpoint_service_name
     private_connection_resource_id = module.atlas_azure.privatelink_service_info[local.pe1].atlas_private_link_service_resource_id
     is_manual_connection           = true
     request_message                = "MongoDB Atlas PrivateLink"
