@@ -2,8 +2,9 @@ data "azurerm_resource_group" "main" {
   name = var.resource_group_name
 }
 
-# Create client secret for encryption (only if not provided)
-# TODO: Replace with roleId when CLOUDP-369548 is implemented
+# Create client secret for encryption (only if not provided).
+# NOTE: In v1, this will be replaced with secretless role_id-based authentication
+# once the mongodbatlas provider adds support for Azure encryption without client_secret.
 resource "azuread_service_principal_password" "encryption" {
   count                = var.existing_encryption_client_secret.enabled ? 0 : 1
   service_principal_id = "/servicePrincipals/${var.service_principal_id}"
@@ -33,13 +34,12 @@ module "atlas_azure" {
       purge_protection_enabled   = var.purge_protection_enabled
       soft_delete_retention_days = var.soft_delete_retention_days
     }
-    require_private_networking = var.require_private_networking
-    private_endpoint_regions   = var.private_endpoint_regions
+    private_endpoint_regions = var.private_endpoint_regions
   }
 }
 
 resource "azapi_update_resource" "approval" {
-  for_each = var.require_private_networking ? module.atlas_azure.encryption.private_endpoints : {}
+  for_each = length(var.private_endpoint_regions) > 0 ? module.atlas_azure.encryption.private_endpoints : {}
 
   type      = "Microsoft.KeyVault/Vaults/PrivateEndpointConnections@2023-07-01"
   name      = each.value.private_endpoint_connection_name
@@ -70,6 +70,6 @@ output "key_identifier" {
 }
 
 output "private_endpoints" {
-  description = "Private endpoint status (empty if require_private_networking = false)"
+  description = "Private endpoint status (empty if private_endpoint_regions not set)"
   value       = module.atlas_azure.encryption.private_endpoints
 }

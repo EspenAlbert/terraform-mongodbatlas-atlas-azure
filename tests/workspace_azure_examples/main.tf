@@ -146,7 +146,7 @@ resource "random_string" "suffix" {
 resource "azuread_service_principal_password" "encryption" {
   count                = var.existing_encryption_client_secret.enabled ? 0 : 1
   service_principal_id = "/servicePrincipals/${local.service_principal_id}"
-  display_name         = "MongoDB Atlas - Encryption Test"
+  display_name         = "MongoDB Atlas - Encryption Test Workspace Test"
 }
 
 locals {
@@ -187,9 +187,11 @@ locals {
   # tflint-ignore: terraform_unused_declarations
   static_ip_eastus2 = module.vnet_eastus2.first_usable_ip
   # tflint-ignore: terraform_unused_declarations
+  region_eastus2 = "eastus2"
+  # tflint-ignore: terraform_unused_declarations
   privatelink_endpoints_multi_region = [
-    { azure_location = "eastus2", subnet_id = module.vnet_multi_region_eastus2.subnet_id, name = "pe-atlas-multi-eastus2" },
-    { azure_location = "westus2", subnet_id = module.vnet_multi_region_westus2.subnet_id }
+    { region = "eastus2", subnet_id = module.vnet_multi_region_eastus2.subnet_id, name = "pe-atlas-multi-eastus2" },
+    { region = "westus2", subnet_id = module.vnet_multi_region_westus2.subnet_id }
   ]
 }
 

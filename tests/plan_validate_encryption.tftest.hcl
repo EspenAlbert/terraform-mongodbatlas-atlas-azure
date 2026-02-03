@@ -118,44 +118,6 @@ run "encryption_invalid_azure_location_format" {
   ]
 }
 
-run "encryption_private_networking_without_enabled" {
-  command = plan
-
-  variables {
-    project_id = var.project_id
-    encryption = {
-      enabled                    = false
-      require_private_networking = true
-      private_endpoint_regions   = ["US_EAST_2"]
-    }
-  }
-
-  expect_failures = [
-    var.encryption
-  ]
-}
-
-run "encryption_private_networking_without_regions" {
-  command = plan
-
-  variables {
-    project_id = var.project_id
-    encryption = {
-      enabled = true
-      create_key_vault = {
-        enabled             = true
-        name                = "test-kv"
-        resource_group_name = "rg"
-        azure_location      = "eastus2"
-      }
-      require_private_networking = true
-    }
-  }
-
-  expect_failures = [
-    var.encryption
-  ]
-}
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Valid Configuration Tests
@@ -262,8 +224,7 @@ run "encryption_with_private_networking" {
         resource_group_name = "rg"
         azure_location      = "eastus2"
       }
-      require_private_networking = true
-      private_endpoint_regions   = ["US_EAST_2", "EUROPE_WEST"]
+      private_endpoint_regions = ["US_EAST_2", "EUROPE_WEST"]
     }
   }
 
@@ -276,4 +237,74 @@ run "encryption_with_private_networking" {
     condition     = length(module.encryption_private_endpoint) == 2
     error_message = "Expected 2 private endpoints to be created"
   }
+}
+
+run "encryption_private_networking_azure_format" {
+  command = plan
+
+  variables {
+    project_id               = var.project_id
+    encryption_client_secret = "test-secret-value"
+    encryption = {
+      enabled = true
+      create_key_vault = {
+        enabled             = true
+        name                = "test-kv"
+        resource_group_name = "rg"
+        azure_location      = "eastus2"
+      }
+      private_endpoint_regions = ["eastus2", "westeurope"]
+    }
+  }
+
+  assert {
+    condition     = length(module.encryption_private_endpoint) == 2
+    error_message = "Expected 2 private endpoints with Azure format regions"
+  }
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Region Validation Check Block Tests
+# ─────────────────────────────────────────────────────────────────────────────
+
+run "invalid_encryption_region_format" {
+  command = plan
+
+  variables {
+    project_id               = var.project_id
+    encryption_client_secret = "test-secret-value"
+    encryption = {
+      enabled = true
+      create_key_vault = {
+        enabled             = true
+        name                = "test-kv"
+        resource_group_name = "rg"
+        azure_location      = "eastus2"
+      }
+      private_endpoint_regions = ["invalid_region_xyz"]
+    }
+  }
+
+  expect_failures = [check.valid_encryption_regions]
+}
+
+run "invalid_encryption_multiple_bad_regions" {
+  command = plan
+
+  variables {
+    project_id               = var.project_id
+    encryption_client_secret = "test-secret-value"
+    encryption = {
+      enabled = true
+      create_key_vault = {
+        enabled             = true
+        name                = "test-kv"
+        resource_group_name = "rg"
+        azure_location      = "eastus2"
+      }
+      private_endpoint_regions = ["bad_region_1", "eastus2", "another_bad"]
+    }
+  }
+
+  expect_failures = [check.valid_encryption_regions]
 }
