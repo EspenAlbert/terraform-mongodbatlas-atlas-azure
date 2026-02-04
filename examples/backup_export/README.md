@@ -46,7 +46,7 @@ resource "mongodbatlas_project" "this" {
 }
 ```
 
-- You can use this and replace the `var.project_id` with `mongodbatlas_project.this.project_id` in the [main.tf](./main.tf) file.
+- You can use this and replace the `var.project_id` with `mongodbatlas_project.this.project_id` in the [main.tf](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/blob/v0.1.0/examples/backup_export/main.tf) file.
 <!-- END_GETTING_STARTED -->
 
 ## Code Snippet
@@ -58,6 +58,7 @@ Copy and use this code to get started quickly:
 # Module-managed storage account (recommended for simplicity)
 module "atlas_azure" {
   source  = "terraform-mongodbatlas-modules/atlas-azure/mongodbatlas"
+  version = "v0.1.0"
   project_id = var.project_id
 
   atlas_azure_app_id       = var.atlas_azure_app_id
@@ -90,6 +91,7 @@ module "atlas_azure" {
 #
 # module "atlas_azure" {
 #   source  = "terraform-mongodbatlas-modules/atlas-azure/mongodbatlas"
+  version = "v0.1.0"
 #   project_id = var.project_id
 
 #   atlas_azure_app_id       = var.atlas_azure_app_id
@@ -118,8 +120,8 @@ output "module_full" {
 ```
 
 **Additional files needed:**
-- [variables.tf](./variables.tf)
-- [versions.tf](./versions.tf)
+- [variables.tf](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/blob/v0.1.0/examples/backup_export/variables.tf)
+- [versions.tf](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/blob/v0.1.0/examples/backup_export/versions.tf)
 
 
 
