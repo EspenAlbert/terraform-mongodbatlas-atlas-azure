@@ -33,6 +33,16 @@ jobs:
         uses: mongodb/atlas-github-action@07d212bf80c068dfcfbf6e15b22c61ae6e66d96e # v0.2.0
 
   # === OK_EDIT: path-sync job-validate ===
+      - name: Azure Login
+        run: az login --service-principal -u "$ARM_CLIENT_ID" -p "$ARM_CLIENT_SECRET" --tenant "$ARM_TENANT_ID" && az account set -s "$ARM_SUBSCRIPTION_ID"
+        env:
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      - name: Validate regions
+        run: just validate-regions-azure
+
   # === DO_NOT_EDIT: path-sync job-slack ===
   slack-notification:
     needs: [validate-regions]
@@ -59,7 +69,3 @@ jobs:
               ]
             }
   # === OK_EDIT: path-sync job-slack ===
-  # ADD GCP/Azure Login and
-  # Validate regions here
-  #   - name: Validate regions
-  #     run: just validate-regions <provider> --output-format variable
