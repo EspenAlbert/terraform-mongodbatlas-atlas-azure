@@ -79,7 +79,7 @@ resource "mongodbatlas_project" "this" {
 }
 ```
 
-- You can use this and replace the `var.project_id` with `mongodbatlas_project.this.project_id` in the [main.tf](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/blob/v0.2.0/main.tf) file.
+- You can use this and replace the `var.project_id` with `mongodbatlas_project.this.project_id` in the [main.tf](./main.tf) file.
 
 <!-- END_GETTING_STARTED -->
 
@@ -144,12 +144,12 @@ Run 'just gen-readme' to regenerate. -->
 
 Feature | Name
 --- | ---
-Backup Export | [Azure Blob Storage Export](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/blob/v0.2.0/examples/backup_export)
-Encryption at Rest | [Azure Key Vault Integration (User-Provided)](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/blob/v0.2.0/examples/encryption)
-Encryption at Rest | [Azure Key Vault (Module-Managed with Private Networking)](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/blob/v0.2.0/examples/encryption_create_key_vault_private_networking)
-Private Link | [Azure Private Endpoint (Module-Managed)](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/blob/v0.2.0/examples/privatelink)
-Private Link | [Azure Private Endpoint (Bring Your Own Endpoint)](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/blob/v0.2.0/examples/privatelink_byoe)
-Private Link | [Multi-Region Private Endpoints](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/blob/v0.2.0/examples/privatelink_multi_region)
+Backup Export | [Azure Blob Storage Export](./examples/backup_export)
+Encryption at Rest | [Azure Key Vault Integration (User-Provided)](./examples/encryption)
+Encryption at Rest | [Azure Key Vault (Module-Managed with Private Networking)](./examples/encryption_create_key_vault_private_networking)
+Private Link | [Azure Private Endpoint (Module-Managed)](./examples/privatelink)
+Private Link | [Azure Private Endpoint (Bring Your Own Endpoint)](./examples/privatelink_byoe)
+Private Link | [Multi-Region Private Endpoints](./examples/privatelink_multi_region)
 
 <!-- END_TABLES -->
 <!-- BEGIN_TF_DOCS -->
