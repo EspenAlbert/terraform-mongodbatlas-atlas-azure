@@ -1,5 +1,7 @@
 ## (Unreleased)
 
+## 0.2.0 (February 25, 2026)
+
 BREAKING CHANGES:
 
 * module: Replaces check blocks (plan-time warnings) with terraform_data preconditions (plan-time errors) for region validation. Configurations with invalid regions that previously produced warnings will now fail during plan ([#31](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-cluster/pull/31))
