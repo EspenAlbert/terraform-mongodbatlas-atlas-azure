@@ -132,17 +132,20 @@ resource "mongodbatlas_encryption_at_rest" "this" {
   project_id               = var.project_id
   enabled_for_search_nodes = var.enabled_for_search_nodes
 
+  /* Mutually exclusive auth: role_id (default) vs tenant_id/client_id/secret (legacy); single block, conditional attrs. */
   azure_key_vault_config {
     enabled                    = true
     azure_environment          = "AZURE"
-    tenant_id                  = local.tenant_id
     subscription_id            = local.subscription_id
-    client_id                  = data.azuread_service_principal.atlas.client_id
-    secret                     = var.client_secret
     resource_group_name        = local.resource_group_name
     key_vault_name             = local.key_vault_name
     key_identifier             = local.key_identifier
     require_private_networking = var.require_private_networking
+
+    role_id   = var.client_secret == null ? var.role_id : null
+    tenant_id = var.client_secret != null ? local.tenant_id : null
+    client_id = var.client_secret != null ? data.azuread_service_principal.atlas.client_id : null
+    secret    = var.client_secret
   }
 
   lifecycle {
