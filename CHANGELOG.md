@@ -1,5 +1,12 @@
 ## (Unreleased)
 
+BREAKING CHANGES:
+
+* output/encryption.private_endpoints: `module.encryption_private_endpoint` and `encryption` output map keys use normalized Azure location strings ([#43](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/pull/43))
+* variable/privatelink_byo_endpoint: Changes type from `map(string)` to `map(object({ region }))` to future proof support for cross-region BYOE PrivateLink ([#43](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/pull/43))
+* variable/privatelink_byo_endpoint: Renames `privatelink_byoe_regions` to `privatelink_byo_endpoint` to represent the Atlas-side BYOE PrivateLink endpoint ([#43](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/pull/43))
+* variable/privatelink_byo_service: Renames `privatelink_byoe` to `privatelink_byo_service` to represent the user-managed Azure private endpoint linked to Atlas ([#43](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/pull/43))
+
 NOTES:
 
 * provider/mongodbatlas: Requires minimum version 2.8.0 for `mongodbatlas_log_integration` resource support ([#39](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/pull/39))
