@@ -18,6 +18,7 @@ Run 'just gen-readme' to regenerate. -->
 - [Private Link](#private-link)
 - [Backup Export](#backup-export)
 - [Log Integration](#log-integration)
+- [Timeouts](#timeouts)
 - [Optional Variables](#optional-variables)
 - [Outputs](#outputs)
 - [FAQ](#faq)
@@ -430,6 +431,33 @@ object({
 Default: `{}`
 
 
+## Timeouts
+
+Control Terraform operation timeouts for supported resources. For upgrades from v0.2.x, see [v0.3.0 upgrade guide](docs/v0.3.0-upgrade-guide.md).
+
+### timeouts
+
+Timeouts for resources that the Terraform provider exposes with a `timeouts` block or attribute. Timeout values use [Go duration](https://pkg.go.dev/time#ParseDuration) format (for example, "30m", "1h").
+
+Set `timeouts = null` to omit all module-managed timeouts and use each provider's defaults. This avoids plan diffs when upgrading from earlier module versions. It is also the usual choice right after `terraform import`: imported resources often have no module-managed timeout blocks in state, so the module’s default `"30m"` values would otherwise appear as new configuration in the next plan. Use `timeouts = null` until you are ready to adopt the module’s timeout defaults (or set partial/custom values).
+
+- `timeouts = {}` or unset: 30m for create, update, and delete.
+- `timeouts = null`: no module-managed timeouts.
+- `timeouts = { create = "1h" }`: custom create timeout; 30m for other operations unless you set them.
+
+Type:
+
+```hcl
+object({
+  create = optional(string, "30m")
+  update = optional(string, "30m")
+  delete = optional(string, "30m")
+})
+```
+
+Default: `{}`
+
+
 ## Optional Variables
 
 ### atlas_to_azure_region
@@ -607,6 +635,10 @@ Description: Atlas role ID for reuse with other Atlas-Azure features.
 <!-- END_TF_DOCS -->
 
 ## FAQ
+
+### How do I upgrade to v0.3.0 (timeouts and migration)?
+
+See the [v0.2.x to v0.3.0 upgrade guide](docs/v0.3.0-upgrade-guide.md), including the Configurable Timeouts section for `timeouts = null` (zero-diff) versus default 30m behavior.
 
 ### What is `provider_meta "mongodbatlas"` doing?
 

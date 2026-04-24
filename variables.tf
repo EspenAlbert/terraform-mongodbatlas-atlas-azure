@@ -359,3 +359,31 @@ variable "log_integration" {
     error_message = "create_storage_account.azure_location must use Azure format (lowercase, no separators). Examples: eastus2, westeurope"
   }
 }
+
+variable "timeouts" {
+  type = object({
+    create = optional(string, "30m")
+    update = optional(string, "30m")
+    delete = optional(string, "30m")
+  })
+  default     = {}
+  nullable    = true
+  description = <<-EOT
+    Timeouts for resources that the Terraform provider exposes with a `timeouts` block or attribute. Timeout values use [Go duration](https://pkg.go.dev/time#ParseDuration) format (for example, "30m", "1h").
+
+    Set `timeouts = null` to omit all module-managed timeouts and use each provider's defaults. This avoids plan diffs when upgrading from earlier module versions. It is also the usual choice right after `terraform import`: imported resources often have no module-managed timeout blocks in state, so the module’s default `"30m"` values would otherwise appear as new configuration in the next plan. Use `timeouts = null` until you are ready to adopt the module’s timeout defaults (or set partial/custom values).
+
+    - `timeouts = {}` or unset: 30m for create, update, and delete.
+    - `timeouts = null`: no module-managed timeouts.
+    - `timeouts = { create = "1h" }`: custom create timeout; 30m for other operations unless you set them.
+  EOT
+
+  validation {
+    condition = (
+      var.timeouts == null
+      ? true
+      : alltrue([for s in [var.timeouts.create, var.timeouts.update, var.timeouts.delete] : length(trimspace(s)) > 0])
+    )
+    error_message = "When timeouts is not null, create, update, and delete must be non-empty duration strings (Go duration format, for example 30m or 1h30m)."
+  }
+}
