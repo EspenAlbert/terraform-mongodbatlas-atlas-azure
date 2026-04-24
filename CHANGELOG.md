@@ -3,10 +3,12 @@
 NOTES:
 
 * provider/mongodbatlas: Requires minimum version 2.8.0 for `mongodbatlas_log_integration` resource support ([#39](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/pull/39))
+* variable/encryption_client_secret: Deprecates this variable in favor of secretless authorization based on the Cloud Provider Access `role_id` ([#42](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/pull/42))
 
 ENHANCEMENTS:
 
 * output/log_integration: Exposes log export status with storage account id, container name, service URL, integration ids, and blob expiration_days when `log_integration` is enabled ([#39](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/pull/39))
+* submodule/encryption: Uses Cloud Provider Access role_id for Azure Key Vault encryption at rest so the default path does not require encryption_client_secret in state ([#42](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/pull/42))
 * submodule/log_integration: Adds Log Integration submodule for exporting Atlas logs to Azure Blob Storage via `mongodbatlas_log_integration` ([#39](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/pull/39))
 * variable/log_integration: Adds `log_integration` variable with optional module-managed Storage Account, user-supplied `storage_account_id` (BYO), container lifecycle, per-integration storage account and container overrides, and Azure role assignments to the existing CPA service principal (with `skip_role_assignments` to manage permissions outside module) ([#39](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/pull/39))
 * variable/timeouts: Adds optional nullable `timeouts` with 30m defaults for create, update, and delete, applied to supported Atlas and Azure resources. See docs/v0.3.0-upgrade-guide.md for details ([#41](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/pull/41))
