@@ -61,3 +61,9 @@ variable "tags" {
   default     = {}
   description = "Tags to apply to Azure resources."
 }
+
+variable "skip_role_assignments" {
+  type        = bool
+  default     = false
+  description = "Omit Storage Blob Data Contributor for the service principal. Pass root skip_role_assignments. The service principal must use a pre-assigned role for the target storage account."
+}

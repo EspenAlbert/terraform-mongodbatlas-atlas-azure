@@ -149,6 +149,7 @@ Feature | Name
 Backup Export | [Azure Blob Storage Export](./examples/backup_export)
 Encryption at Rest | [Azure Key Vault Integration (User-Provided)](./examples/encryption)
 Encryption at Rest | [Azure Key Vault (Module-Managed with Private Networking)](./examples/encryption_create_key_vault_private_networking)
+Cloud Provider Access | [Read-Only Azure (BYO Key Vault, Storage, and Log Export)](./examples/azure_read_only)
 Private Link | [Azure Private Endpoint (Module-Managed)](./examples/privatelink)
 Private Link | [Azure Private Endpoint (Bring Your Own Endpoint)](./examples/privatelink_byoe)
 Private Link | [Multi-Region Private Endpoints](./examples/privatelink_multi_region)
@@ -239,6 +240,20 @@ Existing service principal object ID. Required if `create_service_principal = fa
 Type: `string`
 
 Default: `null`
+
+### skip_role_assignments
+
+Skip all Azure role assignments (azurerm_role_assignment) in encryption, backup_export, and log_integration submodules. Set true when the service principal already has the required roles pre-assigned externally.
+
+Required roles when true:
+- Key Vault: Key Vault Crypto User, Key Vault Reader on the Key Vault
+- Storage: Storage Blob Data Contributor on each target storage account
+
+Requires BYO resources: create_key_vault.enabled and create_storage_account.enabled (encryption, backup export, log integration) are disallowed when skip_role_assignments = true.
+
+Type: `bool`
+
+Default: `false`
 
 
 ## Encryption at Rest
