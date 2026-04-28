@@ -2,6 +2,7 @@
 
 BREAKING CHANGES:
 
+* module: Makes private endpoint regional mode opt-in. Set `privatelink_regional_mode` to `auto` to restore the previous automatic behavior when using multiple distinct Atlas regions ([#49](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/pull/49))
 * output/encryption.private_endpoints: `module.encryption_private_endpoint` and `encryption` output map keys use normalized Azure location strings ([#43](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/pull/43))
 * submodule/backup_export: Disables public network access on module-managed storage accounts. Use private connectivity or a user-provided `storage_account_id` if a publicly reachable storage endpoint is required ([#44](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/pull/44))
 * variable/privatelink_byo_endpoint: Changes type from `map(string)` to `map(object({ region }))` to future proof support for cross-region BYOE PrivateLink ([#43](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/pull/43))
