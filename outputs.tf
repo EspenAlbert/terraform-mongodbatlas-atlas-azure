@@ -79,7 +79,7 @@ output "resource_ids" {
 }
 
 output "regional_mode_enabled" {
-  description = "True when private endpoint regional mode is enabled in Atlas. The module enables it automatically when you use multiple distinct regions in PrivateLink inputs. See https://www.mongodb.com/docs/atlas/security-private-endpoint/#regionalized-private-endpoints"
+  description = "True when privatelink_regional_mode is auto and there are multiple distinct Atlas regions. Default variable value is disabled. See https://www.mongodb.com/docs/atlas/security-private-endpoint/?cloud-provider=azure#-optional--regionalized-private-endpoints-for-multi-region-sharded-clusters"
   value       = local.enable_regional_mode
 }
 

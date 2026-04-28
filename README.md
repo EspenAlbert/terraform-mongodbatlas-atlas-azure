@@ -273,6 +273,8 @@ See the [Private Link documentation](https://www.mongodb.com/docs/atlas/security
 
 Multi-region PrivateLink endpoints. `region` accepts Atlas format (US_EAST_2) or Azure format (eastus2). All regions must be UNIQUE.
 
+`mongodbatlas_private_endpoint_regional_mode` is only created when `privatelink_regional_mode` is `auto` and there are multiple distinct Atlas service regions. The default is `disabled`.
+
 Type:
 
 ```hcl
@@ -342,6 +344,24 @@ map(object({
 ```
 
 Default: `{}`
+
+### privatelink_regional_mode
+
+Per-region SRV/connection strings for sharded and geo-sharded clusters only, not for replica
+sets. Default is `disabled`. Use `auto` to enable when the module detects multiple distinct
+Atlas service regions.
+
+- **When it helps:** multi-region sharded topologies. Networks that cannot be peered and need
+local private-endpoint connection strings.
+- **Tradeoffs:** toggling is project-wide (connection string and DNS churn, possible brief
+downtime). A region's PE connection string is not a cross-region disaster-recovery or failover
+path on its own.
+- **Often skip:** a single global PE with VNet peering, or one PE per region that every app can
+reach, is enough. See [regionalized private endpoints (multi-region sharded)](https://www.mongodb.com/docs/atlas/security-private-endpoint/?cloud-provider=azure#-optional--regionalized-private-endpoints-for-multi-region-sharded-clusters).
+
+Type: `string`
+
+Default: `"disabled"`
 
 
 ## Backup Export
@@ -612,7 +632,7 @@ Description: Per-key Atlas PrivateLink service identifiers. Use with bring-your-
 
 ### <a name="output_regional_mode_enabled"></a> [regional\_mode\_enabled](#output\_regional\_mode\_enabled)
 
-Description: True when private endpoint regional mode is enabled in Atlas. The module enables it automatically when you use multiple distinct regions in PrivateLink inputs. See https://www.mongodb.com/docs/atlas/security-private-endpoint/#regionalized-private-endpoints
+Description: True when privatelink\_regional\_mode is auto and there are multiple distinct Atlas regions. Default variable value is disabled. See https://www.mongodb.com/docs/atlas/security-private-endpoint/?cloud-provider=azure#-optional--regionalized-private-endpoints-for-multi-region-sharded-clusters
 
 ### <a name="output_resource_ids"></a> [resource\_ids](#output\_resource\_ids)
 
