@@ -10,6 +10,7 @@ BREAKING CHANGES:
 
 NOTES:
 
+* provider/mongodbatlas: Aligns minimum version to 2.8 in backup export, encryption, and private link submodules ([#47](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/pull/47))
 * provider/mongodbatlas: Requires minimum version 2.8.0 for `mongodbatlas_log_integration` resource support ([#39](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/pull/39))
 * variable/encryption_client_secret: Deprecates this variable in favor of secretless authorization based on the Cloud Provider Access `role_id` ([#42](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/pull/42))
 
@@ -23,6 +24,10 @@ ENHANCEMENTS:
 * variable/log_integration: Adds `log_integration` variable with optional module-managed Storage Account, user-supplied `storage_account_id` (BYO), container lifecycle, per-integration storage account and container overrides, and Azure role assignments to the existing CPA service principal (with `skip_role_assignments` to manage permissions outside module) ([#39](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/pull/39))
 * variable/skip_role_assignments: Skip all `azurerm_role_assignment` resources in encryption, backup export, and log integration to allow module users with read-only azure access ([#45](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/pull/45))
 * variable/timeouts: Adds optional nullable `timeouts` with 30m defaults for create, update, and delete, applied to supported Atlas and Azure resources. See docs/v0.3.0-upgrade-guide.md for details ([#41](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/pull/41))
+
+BUG FIXES:
+
+* provider/azurerm: Requires minimum version 4.42 ([#47](https://github.com/terraform-mongodbatlas-modules/terraform-mongodbatlas-atlas-azure/pull/47))
 
 ## 0.2.0 (February 25, 2026)
 
