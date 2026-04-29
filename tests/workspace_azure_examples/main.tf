@@ -16,6 +16,10 @@ terraform {
       source  = "hashicorp/random"
       version = "~> 3.0"
     }
+    time = {
+      source  = "hashicorp/time"
+      version = "~> 0.12"
+    }
   }
   required_version = ">= 1.9"
 }
@@ -26,6 +30,7 @@ provider "azurerm" {
   subscription_id = var.subscription_id
 }
 provider "azuread" {}
+provider "time" {}
 
 variable "org_id" {
   type    = string
@@ -167,6 +172,9 @@ locals {
   # Backup/log export locals
   # tflint-ignore: terraform_unused_declarations
   storage_account_name = var.storage_account_name != "" ? var.storage_account_name : "saatlas${random_string.suffix.id}"
+  # Distinct from storage_account_name so ex_backup_export and ex_log_integration do not claim the same global Azure storage account name.
+  # tflint-ignore: terraform_unused_declarations
+  storage_account_name_log_integration = "salogint${random_string.suffix.id}"
   # tflint-ignore: terraform_unused_declarations
   storage_account_name_byo_log = "sabyolog${random_string.suffix.id}"
 
@@ -234,7 +242,7 @@ resource "azurerm_storage_account" "azure_read_only_backup" {
   account_replication_type        = "LRS"
   min_tls_version                 = "TLS1_2"
   allow_nested_items_to_be_public = false
-  public_network_access_enabled   = false
+  public_network_access_enabled   = true
 }
 
 resource "azurerm_storage_account" "azure_read_only_log" {
@@ -245,7 +253,43 @@ resource "azurerm_storage_account" "azure_read_only_log" {
   account_replication_type        = "LRS"
   min_tls_version                 = "TLS1_2"
   allow_nested_items_to_be_public = false
-  public_network_access_enabled   = false
+  public_network_access_enabled   = true
+}
+
+# Stand-in for organization-assigned roles when examples/azure_read_only uses skip_role_assignments (module does not create these).
+resource "azurerm_role_assignment" "azure_read_only_stand_in_atlas_kv_crypto" {
+  scope                = azurerm_key_vault.azure_read_only.id
+  role_definition_name = "Key Vault Crypto User"
+  principal_id         = local.service_principal_id
+}
+
+resource "azurerm_role_assignment" "azure_read_only_stand_in_atlas_kv_reader" {
+  scope                = azurerm_key_vault.azure_read_only.id
+  role_definition_name = "Key Vault Reader"
+  principal_id         = local.service_principal_id
+}
+
+resource "azurerm_role_assignment" "azure_read_only_stand_in_atlas_backup_blob" {
+  scope                = azurerm_storage_account.azure_read_only_backup.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = local.service_principal_id
+}
+
+resource "azurerm_role_assignment" "azure_read_only_stand_in_atlas_log_blob" {
+  scope                = azurerm_storage_account.azure_read_only_log.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = local.service_principal_id
+}
+
+# Single depends on for the four role assignments.
+resource "time_sleep" "azure_read_only_atlas" {
+  create_duration = "1s"
+  depends_on = [
+    azurerm_role_assignment.azure_read_only_stand_in_atlas_kv_crypto,
+    azurerm_role_assignment.azure_read_only_stand_in_atlas_kv_reader,
+    azurerm_role_assignment.azure_read_only_stand_in_atlas_backup_blob,
+    azurerm_role_assignment.azure_read_only_stand_in_atlas_log_blob,
+  ]
 }
 
 locals {
