@@ -48,7 +48,7 @@ resource "mongodbatlas_project" "this" {
 }
 ```
 
-- You can use this and replace the `var.project_id` with `mongodbatlas_project.this.project_id` in the [main.tf](./main.tf) file.
+- You can use this and replace the `var.project_id` with `mongodbatlas_project.this.project_id` in the [main.tf](https://github.com/EspenAlbert/terraform-mongodbatlas-atlas-azure/blob/v0.0.2/examples/privatelink/main.tf) file.
 <!-- END_GETTING_STARTED -->
 
 ## Code Snippet
@@ -58,7 +58,8 @@ Copy and use this code to get started quickly:
 **main.tf**
 ```hcl
 module "atlas_azure" {
-  source  = "terraform-mongodbatlas-modules/atlas-azure/mongodbatlas"
+  source  = "EspenAlbert/atlas-azure/mongodbatlas"
+  version = "v0.0.2"
 
   project_id = var.project_id
 
@@ -74,8 +75,8 @@ output "privatelink" {
 ```
 
 **Additional files needed:**
-- [variables.tf](./variables.tf)
-- [versions.tf](./versions.tf)
+- [variables.tf](https://github.com/EspenAlbert/terraform-mongodbatlas-atlas-azure/blob/v0.0.2/examples/privatelink/variables.tf)
+- [versions.tf](https://github.com/EspenAlbert/terraform-mongodbatlas-atlas-azure/blob/v0.0.2/examples/privatelink/versions.tf)
 
 
 
